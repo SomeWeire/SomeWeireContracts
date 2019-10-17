@@ -8,9 +8,11 @@ import "./Priced.sol";
 	@author	Some Wei're
 	@version 1.0
 
-	Main contract for Some Wei're. Contains deposit method, to bury at a location, withdrawal method to dig at a location, check status method to check the status of a buried amount.
-	Other methods are owner owned, to set the app address (which ensures deposit withdrawal and status methods can only be called via the mobile app), set the minimum and maximum amount
-	to bury, set the transaction price, get the total buried amount (as an event), transfer a deposed amount to an address (help recover a lost amount), and ultimately close
+	Main contract for Some Wei're. Contains deposit method, to bury at a location, withdrawal method to dig at a location,
+	check status method to check the status of a buried amount. Other methods are owner owned, to set the app address 
+	(which ensures deposit withdrawal and status methods can only be called via the mobile app), set the minimum and 
+	maximum amount to bury, set the transaction price, get the total buried amount (as an event), transfer a deposed amount 
+	to an address (help recover a lost amount), and ultimately close
 	the contract  
 */
 
@@ -33,16 +35,25 @@ contract Deposit is Owned, Verify, Priced{
 	uint256 private etherLimit;
 	uint256 private etherMin;
 
-	//Digging Event to validate the transaction on the app side and get the dug amount, with a nonce and the transaction caller indexed as parameters to filter from the app side
+	/*
+	Digging Event to validate the transaction on the app side and get the dug amount, with a nonce and the transaction caller 
+	indexed as parameters to filter from the app side
+	*/
 	event withdrawalEvent(uint256 indexed timestamp, address indexed sender, uint256 amountFound);
 	
-	//Deposed Event to validate the transaction on the app side and get the buried amount, with a nonce and the transaction caller indexed as parameters to filter from the app side
+	/*
+	Deposed Event to validate the transaction on the app side and get the buried amount, with a nonce and the transaction caller 
+	indexed as parameters to filter from the app side
+	*/
 	event depositEvent(uint256 indexed timestamp, address indexed sender, uint256 amountDeposed);
 
 	//Total buried amount on the contract, only for the owner
 	event deposedBalance(uint256 balance);
 
-	//Check Status event to validate the transaction on the app side and get the buried amount, with an nonce and the transaction caller indexed as parameters to filter from the app side
+	/*
+	Check Status event to validate the transaction on the app side and get the buried amount, with an nonce and the transaction 
+	caller indexed as parameters to filter from the app side
+	*/
 	event checkFundsStatus(uint256 indexed timestamp, address indexed sender, uint256 fundsAmount);
 
 
@@ -56,19 +67,20 @@ contract Deposit is Owned, Verify, Priced{
 	@param _userSignature : signature of the user, to prevent replay attacks
 	@return depositEvent : Event to send the amount buried at the location
 
-	The verify modifyer rebuilds user and app signatures to verify addresses of the app and the user, to replay attacks. Go to Verify.sol to get more informations on the verify process
+	The verify modifyer rebuilds user and app signatures to verify addresses of the app and the user, to replay attacks. Go to Verify.sol 
+	to get more informations on the verify process
 	*/
 	function deposit(bytes32 _location, 
 					 uint256 _amount,
 					 uint256 _nonce, 
 					 bytes memory _appSignature,
 					 bytes memory _userSignature) public payable verify(_nonce,
-					 												_appSignature,
-					 												_userSignature,
-					 												_location,
-					 												_amount,
-					 												appAddress,
-					 												msg.sender) costs(price){
+					 								_appSignature,
+					 								_userSignature,
+					 								_location,
+					 								_amount,
+					 								appAddress,
+					 								msg.sender) costs(price){
 
 		//Execution of the method requires the amount to bury to be superior to the value sent by the user
 		require(_amount <= msg.value,
@@ -108,7 +120,8 @@ contract Deposit is Owned, Verify, Priced{
 	@param _userSignature : signature of the user, to prevent replay attacks
 	@return withdrawalEvent : Event to send the amount found if the location contains a treasure, otherwise sends 0
 
-	The verify modifyer rebuilds user and app signatures to verify addresses of the app and the user, to replay attacks. Go to Verify.sol to get more informations on the verify process
+	The verify modifyer rebuilds user and app signatures to verify addresses of the app and the user, to replay attacks. Go to Verify.sol
+	to get more informations on the verify process
 	*/
 	function withdrawal(string memory _dDX,
 					    string memory _dDY,
@@ -116,12 +129,12 @@ contract Deposit is Owned, Verify, Priced{
 					    uint256 _nonce, 
 					 	bytes memory _appSignature,
 					 	bytes memory _userSignature) public payable verify(_nonce, 
-					 													_appSignature,
-					 													_userSignature,
-					 													keccak256(abi.encodePacked(_dDX, _dDY)),
-					 													_amount,
-					 													appAddress,
-					 													msg.sender) costs(price){
+					 									_appSignature,
+					 									_userSignature,
+					 									keccak256(abi.encodePacked(_dDX, _dDY)),
+					 									_amount,
+					 									appAddress,
+					 									msg.sender) costs(price){
 
 		bytes32 location = keccak256(abi.encodePacked(_dDX, _dDY));
 
@@ -159,17 +172,18 @@ contract Deposit is Owned, Verify, Priced{
 	@param _userSignature : signature of the user, to prevent replay attacks
 	@return checkFundsStatus : Event to send the buried amount if the location contains a treasure or if the user has rights, otherwise sends 0
 
-	The verify modifyer rebuilds user and app signatures to verify addresses of the app and the user, to replay attacks. Go to Verify.sol to get more informations on the verify process
+	The verify modifyer rebuilds user and app signatures to verify addresses of the app and the user, to replay attacks. Go to Verify.sol
+	to get more informations on the verify process
 	*/
 	function checkDeposedAmountStatus(bytes32 _location,
 					 				  uint256 _nonce, 
 					 				  bytes memory _appSignature,
 					 				  bytes memory _userSignature) public verifyStatus(_nonce, 
-					 															 _appSignature,
-					 															 _userSignature,
-					 															 _location,
-					 															 appAddress,
-					 															 msg.sender){
+					 												_appSignature,
+					 												_userSignature,
+					 												_location,
+					 												appAddress,
+					 												msg.sender){
 
 		if(fundsOwner[_location] == msg.sender){
 			emit checkFundsStatus(_nonce, msg.sender, funds[_location]);
@@ -184,7 +198,8 @@ contract Deposit is Owned, Verify, Priced{
 	}
 
 	/*
-	Set the app address, which corresponds to the address of the Some Wei're app. This address has to correspond to the address verified via the appSignature sent when calling users methods.
+	Set the app address, which corresponds to the address of the Some Wei're app. This address has to correspond to the address verified via 
+	the appSignature sent when calling users methods.
 	@param _appAddress : the addess of the app. Set by the owner
 	*/
 	function setAppAddress(address _appAddress) public onlyOwner {

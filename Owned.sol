@@ -14,7 +14,8 @@ contract Owned {
     /*
     OnlyOwner modifyer
     
-    The modifyer checks if the sender's address corresponds to the owner's address. If not the transaction is rejected
+    The modifyer checks if the sender's address corresponds to the owner's address. 
+    If not the transaction is rejected
     */
     modifier onlyOwner {
         require(
@@ -55,7 +56,8 @@ contract Owned {
   	}
 
     /*
-    Process the transfer the ownership of the contract to an address, as an internal function only called within this contract
+    Process the transfer the ownership of the contract to an address, as an internal function only 
+    called within this contract
     @param _newOnwer : The new owner's address
     @return OwnershipTransferred : The event return the new owner's address and the previous owner's address 
     */
