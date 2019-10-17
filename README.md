@@ -1,4 +1,4 @@
-# SomeWeireContracts
+# Some Wei're Contracts
 
 The smart contracts of the Some Wei're app 
 
