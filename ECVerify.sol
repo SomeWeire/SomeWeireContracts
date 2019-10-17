@@ -1,5 +1,14 @@
 pragma solidity >=0.4.21 <0.6.0;
 
+
+/*  
+  @author  Some Wei're
+  @version 1.0
+  
+  ECRecovery library, to recover an address from an eliptic curve signature
+  @param hash : the hash, informations contained in the signature, before signing it with the private key corresponding to the address
+  @param sig : the signature, the hash signed with the private key corresponding to the address
+*/
 library ECRecovery {
   function recover(bytes32 hash, bytes memory sig) public pure returns (address) {
     bytes32 r;
