@@ -11,3 +11,5 @@ https://play.google.com/store/apps/details?id=com.someweire.app
 To learn more about how to use Some Wei're, check our **article on Medium** : 
 
 https://medium.com/some-weire-an-ethereum-treasure-hunting-app/presentation-eeaf573e6477
+
+![alt text](https://github.com/SomeWeire/SomeWeireContracts/blob/master/feature1600.png "interface")
